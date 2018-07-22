@@ -4,8 +4,8 @@
 SELECT 
 	first_name
     ,Last_Name 
-    FROM sakila.actor
-    ;
+FROM sakila.actor
+;
 
 -- * 1b. Display the first and last name of each actor in a single column in upper case letters. Name the column `Actor Name`.
 
@@ -13,26 +13,26 @@ SELECT
     CONCAT(upper(first_name)
     ,+ ' '
     ,upper(Last_Name)) AS Actor_Name
-	FROM sakila.actor
-    ;
+FROM sakila.actor
+;
 
 -- * 2a. You need to find the ID number, first name, and last name of an actor, of whom you know only the first name, "Joe." What is one query would you use to obtain this information?
 
 select actor_id
 	,first_name
     ,last_name
-	from sakila.actor 
-    where first_name = "Joe"
-    ;
+from sakila.actor 
+where first_name = "Joe"
+;
     
 -- * 2b. Find all actors whose last name contain the letters `GEN`:
 
 select actor_id
 	,first_name
     ,last_name
-	from sakila.actor 
-    where last_name like "%GEN%"
-    ;
+from sakila.actor 
+where last_name like "%GEN%"
+;
     
 -- * 2c. Find all actors whose last names contain the letters `LI`. This time, order the rows by last name and first name, in that order:
 
@@ -40,21 +40,22 @@ SELECT
     actor_id
     ,first_name
     ,last_name
-	FROM sakila.actor
-	WHERE last_name LIKE '%LI%'
-	ORDER BY last_name 
+FROM sakila.actor
+WHERE last_name LIKE '%LI%'
+ORDER BY last_name 
 		,first_name
-        ;
+;
 
 -- * 2d. Using `IN`, display the `country_id` and `country` columns of the following countries: Afghanistan, Bangladesh, and China:
 
 select country_id
 	,country
-	from sakila.country 
-	where country in('Afghanistan','Bangladesh','China');
+from sakila.country 
+where country in('Afghanistan','Bangladesh','China')
+;
         
 -- * 3a. Add a `middle_name` column to the table `actor`. Position it between `first_name` and `last_name`. Hint: you will need to specify the data type.
-
+-- SELECT * FROM sakila.actor;
 ALTER TABLE  sakila.actor
 ADD COLUMN middle_name VARCHAR(30) AFTER first_name
 ;
@@ -73,24 +74,28 @@ DROP COLUMN middle_name;
 
 select last_name
 	,count(last_name) 
-    from sakila.actor 
-    group by last_name
-    ;
+from sakila.actor 
+group by last_name
+;
 
 -- * 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
 
 select last_name
 	,count(last_name) 
-    from sakila.actor  
-    group by last_name 
-    having count(last_name) >= 2;
+from sakila.actor  
+group by last_name 
+having count(last_name) >= 2
+;
 
 -- * 4c. Oh, no! The actor `HARPO WILLIAMS` was accidentally entered in the `actor` table as `GROUCHO WILLIAMS`, the name of Harpo's second cousin's husbands yoga teacher. Write a query to fix the record.
 
-/* select first_name
+/* 
+select first_name
 	,last_name 
     from sakila.actor 
-    where first_name = "GROUCHO" and last_name = "WILLIAMS"; */
+    where first_name = "GROUCHO" and last_name = "WILLIAMS"
+; 
+*/
 
 UPDATE sakila.actor
 SET first_name = "HARPO"
@@ -114,8 +119,8 @@ SET first_name=(
 -- * Hint: <https://dev.mysql.com/doc/refman/5.7/en/show-create-table.html>
 
 SELECT  *
-	FROM INFORMATION_SCHEMA.TABLES
-	where TABLES.TABLE_NAME = "address";
+FROM INFORMATION_SCHEMA.TABLES
+where TABLES.TABLE_NAME = "address";
 
 -- * 6a. Use `JOIN` to display the first and last names, as well as the address, of each staff member. Use the tables `staff` and `address`:
 
@@ -126,9 +131,9 @@ select s.first_name
     ,a.district
     ,C.city
     ,a.postal_code
-    from sakila.staff S inner join sakila.ADDRESS A ON S.address_id = A.address_id
-    JOIN sakila.CITY C ON A.city_id = C.city_id
-    ;
+from sakila.staff S inner join sakila.ADDRESS A ON S.address_id = A.address_id
+INNER JOIN sakila.CITY C ON A.city_id = C.city_id
+;
 
 -- * 6b. Use `JOIN` to display the total amount rung up by each staff member in August of 2005. Use tables `staff` and `payment`.
 
@@ -138,67 +143,67 @@ SELECT
 	,P.AMOUNT 
     ,P.STAFF_ID
     ,S.STAFF_ID 
-	FROM SAKILA.STAFF S 
-    RIGHT JOIN SAKILA.PAYMENT P ON S.STAFF_ID = P.STAFF_ID
-    WHERE P.PAYMENT_DATE BETWEEN "2005-08-01" AND "2005-08-31"
+FROM SAKILA.STAFF S 
+INNER JOIN SAKILA.PAYMENT P ON S.STAFF_ID = P.STAFF_ID
+WHERE P.PAYMENT_DATE BETWEEN "2005-08-01" AND "2005-08-31"
 
 -- * 6c. List each film and the number of actors who are listed for that film. Use tables `film_actor` and `film`. Use inner join.
 
 SELECT F.TITLE 
     ,COUNT(A.ACTOR_ID) AS Number_of_Actors
-	from SAKILA.ACTOR A
-    INNER JOIN SAKILA.FILM_ACTOR FA ON A.ACTOR_ID = FA.ACTOR_ID
-    INNER JOIN SAKILA.FILM F ON FA.FILM_ID = F.FILM_ID
-    GROUP BY F.TITLE 
-    ORDER BY F.TITLE 
-    ;
+from SAKILA.ACTOR A
+INNER JOIN SAKILA.FILM_ACTOR FA ON A.ACTOR_ID = FA.ACTOR_ID
+INNER JOIN SAKILA.FILM F ON FA.FILM_ID = F.FILM_ID
+GROUP BY F.TITLE 
+ORDER BY F.TITLE 
+;
 
 -- * 6d. How many copies of the film `Hunchback Impossible` exist in the inventory system?
 
 SELECT F.TITLE
-		,COUNT(I.INVENTORY_ID) AS "Number of Copies"
-	FROM SAKILA.FILM F
-	INNER JOIN SAKILA.INVENTORY I ON F.FILM_ID = I.FILM_ID
-    WHERE TITLE = "Hunchback Impossible"
-    GROUP BY F.TITLE;
-     ; 
+		,COUNT(I.INVENTORY_ID) AS 'Number of Copies'
+FROM SAKILA.FILM F
+INNER JOIN SAKILA.INVENTORY I ON F.FILM_ID = I.FILM_ID
+WHERE TITLE = "Hunchback Impossible"
+GROUP BY F.TITLE;
+; 
 
 -- * 6e. Using the tables `payment` and `customer` and the `JOIN` command, list the total paid by each customer. List the customers alphabetically by last name:
 
 SELECT   C.FIRST_NAME
 		,C.LAST_NAME
-        ,SUM(P.AMOUNT) AS "Total Paid by Each Customer"
-        FROM  STORE S
-        INNER JOIN CUSTOMER C ON S.STORE_ID = C.STORE_ID
-        INNER JOIN PAYMENT P ON C.CUSTOMER_ID = P.CUSTOMER_ID
-        GROUP BY C.FIRST_NAME
-				,C.LAST_NAME
-        ORDER BY C.LAST_NAME
-        ;
+        ,SUM(P.AMOUNT) AS 'Total Paid by Each Customer'
+FROM  STORE S
+INNER JOIN CUSTOMER C ON S.STORE_ID = C.STORE_ID
+INNER JOIN PAYMENT P ON C.CUSTOMER_ID = P.CUSTOMER_ID
+GROUP BY C.FIRST_NAME
+		,C.LAST_NAME
+ORDER BY C.LAST_NAME
+;
 
 -- * 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters `K` and `Q` have also soared in popularity. Use subqueries to display the titles of movies starting with the letters `K` and `Q` whose language is English.
 
 SELECT F.TITLE 
-		FROM SAKILA.FILM f
-        inner JOIN LANGUAGE L
-        WHERE TITLE LIKE "Q%" OR TITLE LIKE "k%"
-        AND L.NAME = "ENGLISH"
-        ;
+FROM SAKILA.FILM f
+inner JOIN LANGUAGE L
+WHERE TITLE LIKE "Q%" OR TITLE LIKE "k%"
+AND L.NAME = "ENGLISH"
+;
 -- * 7b. Use subqueries to display all actors who appear in the film `Alone Trip`.
 
 SELECT   A.FIRST_NAME
 		,A.LAST_NAME
-        FROM SAKILA.FILM f
-        INNER JOIN SAKILA.ACTOR A
-		WHERE F.TITLE = "Alone Trip";
+FROM SAKILA.FILM f
+INNER JOIN SAKILA.ACTOR A
+WHERE F.TITLE = "Alone Trip"
+;
 
 -- * 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
 
 SELECT  CU.FIRST_NAME
 		,CU.LAST_NAME
 		,CU.EMAIL 
-FROM 
-SAKILA.COUNTRY C 
+FROM SAKILA.COUNTRY C 
 INNER JOIN SAKILA.CITY CT ON C.COUNTRY_ID = CT.COUNTRY_ID
 INNER JOIN SAKILA.ADDRESS A ON A.CITY_ID = CT.CITY_ID
 INNER JOIN SAKILA.CUSTOMER CU ON A.ADDRESS_ID = CU.ADDRESS_ID
@@ -215,7 +220,7 @@ WHERE L.CATEGORY = "FAMILY"
 -- * 7e. Display the most frequently rented movies in descending order.
 
 SELECT F.TITLE
-, COUNT(I.INVENTORY_ID) AS 'Frequently_Rented'
+	   ,COUNT(I.INVENTORY_ID) AS 'Frequently_Rented'
 FROM SAKILA.FILM F 
 INNER JOIN SAKILA.INVENTORY I ON F.FILM_ID = I.FILM_ID
 INNER JOIN SAKILA.RENTAL R ON I.INVENTORY_ID = R.INVENTORY_ID
@@ -224,50 +229,63 @@ ORDER BY COUNT(I.INVENTORY_ID) DESC;
 
 -- * 7f. Write a query to display how much business, in dollars, each store brought in.
 
+USE SAKILA;
+SELECT 	CONCAT(C.city,",",CT.country) as 'Store'
+		,SUM(P.amount) AS 'Total Sales' 
+FROM payment P
+INNER JOIN rental R on P.rental_id = R.rental_id
+INNER JOIN inventory I ON R.inventory_id = I.inventory_id
+INNER JOIN store S ON I.store_id = S.store_id
+INNER JOIN address A ON S.address_id = A.address_id
+INNER JOIN city C ON A.city_id = C.city_id
+INNER JOIN country CT ON C.country_id = CT.country_id
+WHERE S.store_id IS NOT NULL
+GROUP BY S.store_id
+ORDER BY 'Total Sales' DESC;
+
 -- * 7g. Write a query to display for each store its store ID, city, and country.
+
+SELECT  S.store_id
+		,C.city
+        ,CT.country 
+FROM store S
+LEFT JOIN address A ON S.address_id = A.address_id
+LEFT JOIN city C ON A.city_id = C.city_id
+LEFT JOIN country CT ON C.country_id = CT.country_id
+;
 
 -- * 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
 
+SELECT CG.name AS 'Category'
+		,SUM(P.amount) as 'Total Sales'
+FROM category CG
+LEFT JOIN film_category FCG ON CG.category_id = FCG.category_id
+LEFT JOIN inventory I ON FCG.film_id=I.film_id
+LEFT JOIN rental R ON I.inventory_id = R.inventory_id
+LEFT JOIN payment P ON R.rental_id = P.rental_id
+GROUP BY CG.category_id
+ORDER BY 'Total Sales' DESC LIMIT 5
+;
+
 -- * 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you havent solved 7h, you can substitute another query to create a view.
+
+CREATE VIEW top_5_genres AS(
+	SELECT C.name AS 'Category'
+			,SUM(P.amount) as 'Total Sales'
+	FROM category C
+	LEFT JOIN film_category FCG ON C.category_id = FCG.category_id
+	LEFT JOIN inventory I ON FCG.film_id = I.film_id
+	LEFT JOIN rental R ON I.inventory_id = R.inventory_id
+	LEFT JOIN payment P ON R.rental_id= P.rental_id
+	GROUP BY C.category_id
+	ORDER BY 'Total Sales' DESC LIMIT 5
+	);
 
 -- * 8b. How would you display the view that you created in 8a?
 
+SELECT * FROM top_5_genres
+;
+
 -- * 8c. You find that you no longer need the view `top_five_genres`. Write a query to delete it.
 
-## Appendix: List of Tables in the Sakila DB
-
-* A schema is also available as `sakila_schema.svg`. Open it with a browser to view.
-
-```sql
-	'actor'
-	'actor_info'
-	'address'
-	'category'
-	'city'
-	'country'
-	'customer'
-	'customer_list'
-	'film'
-	'film_actor'
-	'film_category'
-	'film_list'
-	'film_text'
-	'inventory'
-	'language'
-	'nicer_but_slower_film_list'
-	'payment'
-	'rental'
-	'sales_by_film_category'
-	'sales_by_store'
-	'staff'
-	'staff_list'
-	'store'
-```
-
-## Uploading Homework
-
-* To submit this homework using BootCampSpot:
-
-  * Create a GitHub repository.
-  * Upload your .sql file with the completed queries.
-  * Submit a link to your GitHub repo through BootCampSpot.
+DROP VIEW top_5_genres;
